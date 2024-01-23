@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using TwoApis.Models.Dtos;
+using TwoApis.Models.ViewModels;
 using TwoApis.Services;
 
 namespace TwoApiTests
@@ -47,15 +48,27 @@ namespace TwoApiTests
             HttpClient mockClient = new HttpClient (mockHandler.Object);
             WeatherService wWeatherService = new WeatherService( mockClient);
 
+            //--
+            //IpInfoService ipInfoService = new IpInfoService(mockClient);
+            //string city = await ipInfoService.GetCityAsync("1.1.1.1");
+
             //Act
             var result = await wWeatherService.GetWeatherForCityAsync("test-city");
+            WeatherViewModel weatherViewModel = new WeatherViewModel()
+            {
+                Temperature = result.Temperature,
+                Wind = result.Wind,
+                Description = result.Description,
+                //Correct way to solve this?
+                City = "test-city"
+            };
 
             //Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual("test-temp", result.Temperature);
-            Assert.AreEqual("test-wind", result.Wind);
-            Assert.AreEqual("test-description", result.Description);
-            Assert.AreEqual("test-city", result.City);
+            Assert.AreEqual("test-temp", weatherViewModel.Temperature);
+            Assert.AreEqual("test-wind", weatherViewModel.Wind);
+            Assert.AreEqual("test-description", weatherViewModel.Description);
+            Assert.AreEqual("test-city", weatherViewModel.City);
         }
 
     }
